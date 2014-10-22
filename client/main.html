@@ -63,17 +63,21 @@
 
 
 <template name="textcard">
-  <div class="card textcard {{colors color}}-card" id={{_id}} style="color: {{colors color}}; fill: currentColor;">
-  {{numbers number}} {{colors color}} {{shades shade}} {{shapes shape number}}
-  </div>
+  {{#with card}}
+    <div class="card textcard {{colors color}}-card" id={{_id}} style="color: {{colors color}}; fill: currentColor;">
+    {{numbers number}} {{colors color}} {{shades shade}} {{shapes shape number}} {{order}}
+    </div>
+  {{/with}}
 </template>
 
 <template name="card">
-  <div class="card {{colors color}}-card" data-number="{{number}}" data-color="{{color}}" data-shade="{{shade}}" data-shape="{{shape}}" id={{_id}}>
-  {{#each shapearray number}}
-  <svg class="svg-card" viewBox="0 0 100 200" preserveAspectRatio="xMinYMin meet" data-number="{{number}}" z-index=-40>
-    <use xlink:href="#{{shapes ../shape}}" style="stroke: {{colors ../color}}; {{shader ../shade ../color}}" />
-  </svg>
-  {{/each}}
-  </div>
+  {{#with card}}
+    <div class="card {{colors color}}-card" data-number="{{number}}" data-color="{{color}}" data-shade="{{shade}}" data-shape="{{shape}}" id={{_id}}>
+    {{#each shapearray number}}
+    <svg class="svg-card" viewBox="0 0 100 200" preserveAspectRatio="xMinYMin meet" data-number="{{number}}" z-index=-40>
+      <use xlink:href="#{{shapes ../shape}}" style="stroke: {{colors ../color}}; {{shader ../shade ../color}}" />
+    </svg>
+    {{/each}}
+    </div>
+  {{/with}}
 </template>

@@ -28,3 +28,5 @@ Meteor.startup ->
       unless game_id
         game_id = 0
       check_for_sets(game_id)
+    order_cards: (game_id) ->
+      orderCards(game_id)

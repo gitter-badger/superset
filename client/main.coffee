@@ -299,12 +299,23 @@ handle = query.observeChanges(
       localStorage.setItem("b_sets_isoghost",record.found_isoghosts)
 )
 
+Template.card.helpers
+  card: () -> return Cards.findOne({_id: this.card_mid})
+
+Template.textcard.helpers
+  card: () -> return Cards.findOne({_id: this.card_mid})
+
 Template.globalGame.helpers
   gamecards: () ->
-    gc = Gamecards.find status: 'playing'
+    game_id = 0
+    gc = Gamecards.find({game_id: game_id, status: 'playing'}, {sort: {order: 1}})
+    #d = gc.fetch()
+    #console.log(d)
     cardIds = gc.map (c) -> return c.card_mid
     #console.log(cardIds)
     all = Cards.find({_id: {$in: cardIds}}).fetch()
+    all = gc.fetch()
+    console.log(all)
     chunks = []
     if (window.innerHeight > window.innerWidth)
       size = 3

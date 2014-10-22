@@ -71,8 +71,11 @@ Meteor.methods
         i++
         console.log('Valid Ghost Set')
     if i > 0
-      Gamecards.update({game_id: game_id, card_mid: {$in: cards}, status: 'playing'}, {$set: {status: 'matched'}}, {multi: true})
-      refillGame(12,game_id)
+      for card in cards
+        matched_card = Gamecards.findOne({_id: card})
+        console.log(card)
+      #Gamecards.update({game_id: game_id, card_mid: {$in: cards}, status: 'playing'}, {$set: {status: 'matched'}, $unset: order}, {multi: true})
+
       if iso == 0
         Statistics.update({game: game_id}, {$inc: {found_ghosts: 1}})
         result = 1
