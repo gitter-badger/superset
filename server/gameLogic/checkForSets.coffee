@@ -1,23 +1,3 @@
-@game = 0
-
-@get_random_card = () ->
-  # number = Math.floor((Math.random() * 3))
-  # color = Math.floor((Math.random() * 3))
-  # shade = Math.floor((Math.random() * 3))
-  # shape = Math.floor((Math.random() * 3))
-  # console.log("#{number} #{color} #{shade} #{shape}")
-  # c = Cards.find({number: number, color: color, shade: shade, shape: shape, type: 'standard'})
-  return c
-
-@get_distinct_order = (game_id) ->
-  r = Gamecards.find({game_id: game_id, status: 'playing'}, {sort: {order: 1}}).fetch()
-  ordering = []
-  i = 0
-  # for card in r
-  #   if card.order =
-
-
-
 @check_for_sets = (game_id) ->
   console.log('checking for sets')
   gc = Gamecards.find({game_id: game_id, status: 'playing'})
