@@ -1,93 +1,155 @@
+@import url(http://fonts.googleapis.com/css?family=Lato:100,300,400);
+
+/************** Global ***************/
 html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp, small, strong, sub, sup,
  var, b, i, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody,
 tfoot, thead, tr, th, td, article, aside, canvas, details, figcaption, figure, footer,
 header, hgroup, menu, nav, section, summary, time, mark, audio, video
- { margin: 0; padding: 0; border: 0; font-size: 100%; font: inherit; vertical-align: baseline; }
+ { margin: 0; padding: 0; border: 0; font-size: 100%; font: inherit; vertical-align: baseline; font-family: 'Lato', sans-serif !important;}
 svg {
   stroke-width: 5;
   pointer-events: none;
   vertical-align: bottom;
 }
-.topbar {
-  width: 100%;
-  text-align: left;
-  background-color: lightgrey;
-  color: #444444;
-  font-family: verdana;
-  line-height: 20px;
-  padding: 1px 0 1px 0;
-  vertical-align: middle;
-  display: table;
+
+body{
+  -webkit-transition: all .3s; /* For Safari 3.1 to 6.0 */
+  transition: all .3s;
 }
-.logo {
-  padding: 2px 2px 2px 4px;
-  font-weight: bold;
-  font-size: 20px;
-  display: inline-block;
-  vertical-align: middle;
+
+/************ Layout ***********/
+nav{
+  position: absolute;
+  top: 0px;
+  left: -160px;
+  bottom: 0px;
+  width: 200px;
+  background: #3c4047;
+  color: white;
+  -webkit-transition: all .3s; /* For Safari 3.1 to 6.0 */
+  transition: all .3s;
+}
+
+nav:after{
+  font-weight: 100;
+  content: ">";
+  position: absolute;
+  right: 10px;
+  color: white;
+  top: 50%;
+  font-size: 30px;
+}
+
+nav:hover:after{
+  content: "<";
+}
+
+#stats{
+  position: absolute;
+  top: 0px;
+  left: 40px;
+  right: 0px;
+  height: 40px;
+  background: #3c4047;
+  padding: 9px;
+  box-sizing: border-box;
+  color: white;
+  -webkit-transition: all .3s; /* For Safari 3.1 to 6.0 */
+  transition: all .3s;
+  font-weight: 300;
+}
+
+#stats .stat-item{
   float: left;
+  margin-right: 30px;
 }
-.local-info {
-  padding: 2px 4px 2px 0;
-  font-weight: normal;
-  font-size: 14px;
-  display: inline-block;
-  float: right;
-  vertical-align: middle;
+
+#game{
+  position: absolute;
+  top: 40px;
+  left: 40px;
+  right: 0px;
+  bottom: 0px;
+  padding: .5% 0 0 .5%;
+  -webkit-transition: all .3s; /* For Safari 3.1 to 6.0 */
+  transition: all .3s;
 }
-.global-info {
-  padding: 2px 4px 2px 0;
-  font-weight: normal;
-  font-size: 14px;
-  display: inline-block;
-  float: right;
-  vertical-align: middle;
+
+nav:hover{
+  left: 0px;
 }
-.difference-info {
-  padding: 2px 4px 2px 0;
-  font-weight: normal;
-  font-size: 14px;
-  display: inline-block;
-  float: right;
-  vertical-align: middle;
+
+nav:hover + #stats, nav:hover + #stats + #game{
+  left: 200px;
 }
-.scored {
-  color: green;
-  font-weight: bold;
+
+nav h1{
+  font-weight: 100;
+  font-size: 30px;
+  letter-spacing: 1px;
+  text-align: center;
+  padding: 10px 0;
 }
+
+nav ul{
+  width: 100%;
+}
+
+nav li{
+  padding: 10px;
+  font-weight: 300;
+}
+
+nav li:hover{
+  background: rgba(0,0,0, .1);
+  cursor: pointer;
+}
+
+nav li.pressed{
+  background: rgba(0,0,0, .2);
+}
+
+nav #timer{
+  font-weight: 100;
+  padding: 0px 50px;
+}
+
 .cardrow {
   width: 100%;
-  margin: 0 0 0 0;
-  padding: 2px 2px 2px 2px;
-  white-space: nowrap;
 }
-.textcard {
-  box-sizing: border-box;
-  max-width: 24%;
-  min-height:40px;
-  width: 25%;
-  height:100%;
-  display: inline-block;
-  border-radius: 6px;
-  margin: 10px 10px 0 0px;
-  padding: 0 0 0 0;
-  font-size: 16px;
-  line-height: 40px;
-  font-family: verdana;
-  text-align: center;
+
+.cardrow:after{
+  content: "";
+  display: table;
+  clear: both;
 }
+
 .card {
-  display: inline-block;
+  display: block;
+  float: left;
   position: relative;
-  width: 24%;
+  width: 23.75%;
+  margin: .5%;
   overflow: hidden;
   text-align: center;
   border-radius: 6px;
+  padding: 10px;
+  box-sizing: border-box;
+  -webkit-transition: all .3s; /* For Safari 3.1 to 6.0 */
+  transition: all .3s;
+  border: 1px solid #D8D8D8;
+  cursor: pointer;
 }
+
+.svg-card {
+  width:25%;
+  height:25%;
+}
+
 @media (orientation: portrait) {
   .card {
-    width: 33%;
+    width: 32%;
   }
 }
 .intro-card {
@@ -101,30 +163,24 @@ svg {
 .svg-card {
   width:25%;
   height:25%;
+  -webkit-transition: all .3s; /* For Safari 3.1 to 6.0 */
+  transition: all .3s;
 }
-.green-card {
-  border: 3px solid gray;
-}
-.red-card {
-  border: 3px solid gray;
-}
-.purple-card {
-  border: 3px solid gray;
-}
+
 .selected {
-  background-color: lightgrey;
+  box-shadow: 0px 0px 10px rgba(0,0,0,0.4);
+  margin: .2%;
+  width: 24.35%;
 }
+.selected .svg-card {
+  width: 25.6%;
+  height: 25.6%;
+}
+
 .intro-selected {
   background-color: lightgrey;
 }
-.messages, .intromessages {
-  background-color: lightgrey;
-  color: darkred;
-  border-radius: 6px;
-  width:100%;
-  text-align: center;
-  margin: 40px auto;
-}
+
 .green {
   color: green;
 }
@@ -138,23 +194,24 @@ svg {
   width: 100%;
   margin: 10px 0 0 0;
 }
-.button {
-  display: inline-block;
-  border: 2px solid grey;
-  padding: 5px;
-  border-radius: 6px;
-}
-.button.pressed {
-  background-color: lightgrey;
-}
+
 .dark {
-  background-color: black;
-  color: grey;
+  background-color: #3c4047;
 }
-.light {
-  background-color: lightgrey;
-  border: 2px solid lightgrey;
+
+.dark .card{
+  border: 1px solid #5B616B;
 }
+
+.dark .vision{
+  background: rgba(0,0,0, .2);
+}
+
+.dark .selected{
+  box-shadow: 0px 0px 10px rgba(255,255,255,0.2);
+}
+
+/************** Modal ****************/
 .modal {
     width: 90%;
     height: 95%;

@@ -271,6 +271,9 @@ Template.nav.helpers
       localStorage.setItem('dt_sets_isoghost',s.found_isoghosts)
       Session.set("score_init",1)
     return s
+  buttonstate: (name,value) ->
+    if Session.get(name) == value
+      return 'pressed'
 
 query = Statistics.find({game: game})
 handle = query.observeChanges(
@@ -325,9 +328,6 @@ Template.globalGame.helpers
     chunks.push({row: all});
     #console.log("all : " + all.length)
     return chunks
-  buttonstate: (name,value) ->
-    if Session.get(name) == value
-      return 'pressed'
 
 Template.cardrow.helpers
   cardDisplayType: ->

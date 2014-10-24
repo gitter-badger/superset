@@ -1,10 +1,27 @@
 <template name="nav">
-<div class='topbar'>
- <div class='logo'>SuperSet</div>
- {{#with statistics}}
- <div class='global-info'>[<span title="Global Score">G</span>: {{found_sets}}/{{found_ghosts}}/{{found_isoghosts}}]</div>
- {{/with}}
- <div class='difference-info'>[<span title="Sets Elapsed">SE</span>: <span class='sets_normal_elapsed'></span>/<span class='sets_ghost_elapsed'></span>/<span class='sets_isoghost_elapsed'></span>-<span title="Time Elapsed"><span id="te_m">00</span>:<span id="te_s">00</span></span>]</div>
- <div class='local-info'>[<span title="Score">L</span>: <span class='sets_normal'></span>/<span class='sets_ghost'></span>/<span class='sets_isoghost'></span>]</div>
-</div>
+  <nav>
+    <h1>SuperSet</h1>
+    <ul>
+      <li class='check'>Check For Sets</li>
+      <li class='isometric {{buttonstate 'isometric' 'true'}}'>Isometric</li>
+      <li class='mode {{buttonstate 'selection-type' 'ghost'}}'>Ghost Set</li>
+      <li class='display {{buttonstate 'interface-type' 'textcard'}}'>Toggle Display</li>
+      <li class='vision dark'>Toggle Dark Mode</li>
+      <li class='instructions' data-toggle="modal" data-target="#instructions">Instructions</li>
+    </ul>
+    <div class='messages'></div>
+  </nav>
+  <section id="stats">
+      <span class="stat-item" id="timer" title="Time Elapsed">
+      Session Time
+      <span id="te_m">00</span>
+      :
+      <span id="te_s">00</span>
+    </span>
+    {{#with statistics}}
+      <div class='global-info stat-item'>[<span title="Global Score">All Time Global</span>: {{found_sets}}/{{found_ghosts}}/{{found_isoghosts}}]</div>
+    {{/with}}
+    <div class='difference-info stat-item'>[<span title="Sets Elapsed">Session</span>: <span class='sets_normal_elapsed'></span>/<span class='sets_ghost_elapsed'></span>/<span class='sets_isoghost_elapsed'></span>]</div>
+    <div class='local-info stat-item'>[<span title="Score">Personal</span>: <span class='sets_normal'></span>/<span class='sets_ghost'></span>/<span class='sets_isoghost'></span>]</div>
+  </section>
 </template>
