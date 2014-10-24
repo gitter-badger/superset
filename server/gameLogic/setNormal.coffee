@@ -14,6 +14,7 @@ Meteor.methods
         console.log("VALID SET")
         console.log(cards)
 
+        Matches.insert({game_id: game_id, type: 'normal', number: 3, card_ids: cards, date: new Date().getTime()})
         for card in cards
           in_play = Gamecards.find({game_id: game_id, status: 'playing'}).count()
           matched_card = Gamecards.findOne({game_id: game_id, card_mid: card})

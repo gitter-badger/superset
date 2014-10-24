@@ -10,3 +10,6 @@ Meteor.publish('games', () ->
 Meteor.publish('statistics', () ->
   return Statistics.find()
 )
+Meteor.publish('matches', () ->
+  return Matches.find()
+)

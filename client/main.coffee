@@ -72,6 +72,7 @@ Meteor.startup ->
   Meteor.subscribe('gamecards')
   Meteor.subscribe('games')
   Meteor.subscribe('statistics')
+  Meteor.subscribe('matches')
 
 
 
@@ -305,6 +306,17 @@ Template.card.helpers
 Template.textcard.helpers
   card: () -> return Cards.findOne({_id: this.card_mid})
 
+Template.history.helpers
+ matches: () ->
+   game_id = 0
+   matches = Matches.find({game_id: game_id}, {sort: {date: 1}}, {limit: 1})
+
+Template.matchcard.helpers
+  card: () ->
+    c = Cards.findOne({_id: this.valueOf()})
+    return c
+
+
 Template.globalGame.helpers
   gamecards: () ->
     game_id = 0
@@ -345,6 +357,29 @@ Template.textcard.helpers
     return shapes[index] + plural
 
 Template.card.helpers
+  numbers: (index) ->
+    return numbers[index]
+  colors: (index) ->
+    return colors[index]
+  shades: (index) ->
+    return shades[index]
+  shapes: (index, number) ->
+    plural = if number > 0 then 's' else ''
+    return shapes[index] + plural
+  shapearray: (number) ->
+    a = []
+    for i in [0..number]
+      a.push(i+1)
+    return a
+  shader: (shade,color) ->
+    if shade == 1
+      return "fill: url(#" + colors[color] + "-stripes);"
+    else if shade == 2
+      return "fill: " + colors[color] + ";"
+    else if shade == 0
+      return "fill: none;"
+
+Template.matchcard.helpers
   numbers: (index) ->
     return numbers[index]
   colors: (index) ->

@@ -49,6 +49,7 @@
     <div class='button instructions' data-toggle="modal" data-target="#instructions">?</div>
   </div>
   <div class='messages'></div>
+  {{> history}}
   {{> instructions}}
 </template>
 
@@ -68,6 +69,32 @@
 </template>
 
 <template name="card">
+  {{#with card}}
+    <div class="card {{colors color}}-card" data-number="{{number}}" data-color="{{color}}" data-shade="{{shade}}" data-shape="{{shape}}" id={{_id}}>
+    {{#each shapearray number}}
+    <svg class="svg-card" viewBox="0 0 100 200" preserveAspectRatio="xMinYMin meet" data-number="{{number}}" z-index=-40>
+      <use xlink:href="#{{shapes ../shape}}" style="stroke: {{colors ../color}}; {{shader ../shade ../color}}" />
+    </svg>
+    {{/each}}
+    </div>
+  {{/with}}
+</template>
+
+<template name="history">
+  <div class="history">
+  {{#each matches}}
+    {{> match}}
+  {{/each}}
+  </div>
+</template>
+
+<template name="match">
+  {{#each card_ids}}
+    {{>matchcard}}
+  {{/each}}
+</template>
+
+<template name="matchcard">
   {{#with card}}
     <div class="card {{colors color}}-card" data-number="{{number}}" data-color="{{color}}" data-shade="{{shade}}" data-shape="{{shape}}" id={{_id}}>
     {{#each shapearray number}}

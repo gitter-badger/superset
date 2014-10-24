@@ -72,6 +72,11 @@ Meteor.methods
         console.log('Valid Ghost Set')
     if i > 0
       n = 0
+      if iso == 0
+        type = 'ghost'
+      else
+        type = 'iso'
+      Matches.insert({game_id: game_id, type: type, number: 6, card_ids: cards, date: new Date().getTime()})
       for card in cards
         n++
         in_play = Gamecards.find({game_id: game_id, status: 'playing'}).count()
