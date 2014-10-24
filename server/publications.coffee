@@ -2,7 +2,7 @@ Meteor.publish('cards', () ->
   return Cards.find()
 )
 Meteor.publish('gamecards', () ->
-  return Gamecards.find()
+  return Gamecards.find({status: 'playing'})
 )
 Meteor.publish('games', () ->
   return Games.find()
