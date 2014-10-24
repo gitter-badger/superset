@@ -2,10 +2,7 @@
   <title>SuperSet</title>
 </head>
 <body>
-{{> nav}}
-<div id="game">
-  {{> globalGame}}
-</div>
+{{> globalGame}}
 <svg width="0" height="0" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="position:absolute">
 <defs>
 <g id="diamond">
@@ -37,19 +34,12 @@
 </body>
 
 <template name="globalGame">
-  {{#each gamecards}}
-    {{> cardrow}}
-  {{/each}}
-  <div class='button-row'>
-    <div class='button check'>Check For Sets</div>
-    <div class='button display {{buttonstate 'interface-type' 'textcard'}}'>Toggle Display</div>
-    <div class='button isometric {{buttonstate 'isometric' 'true'}}'>Isometric</div>
-    <div class='button mode {{buttonstate 'selection-type' 'ghost'}}'>Ghost Set</div>
-    <div class='button vision dark'>[]</div>
-    <div class='button instructions' data-toggle="modal" data-target="#instructions">?</div>
-  </div>
-  <div class='messages'></div>
-  {{> history}}
+  {{> nav}}
+  <section id="game">
+    {{#each gamecards}}
+      {{> cardrow}}
+    {{/each}}
+  </section>
   {{> instructions}}
 </template>
 
