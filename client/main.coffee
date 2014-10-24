@@ -33,8 +33,6 @@ $( document).ready () ->
     $("#te_m").html(pad(parseInt(sec / 60, 10) % 60))
     $("#te_h").html(pad(parseInt(sec / 3600, 10)))
   ,1000
-  console.log(localStorage.getItem("dt_sets_normal"))
-  console.log(localStorage.getItem("b_sets_normal"))
   $('.sets_normal_elapsed').html(localStorage.getItem("dt_sets_normal") - localStorage.getItem("b_sets_normal"))
   $('.sets_ghost_elapsed').html(localStorage.getItem("dt_sets_ghost") - localStorage.getItem("b_sets_ghost"))
   $('.sets_isoghost_elapsed').html(localStorage.getItem("dt_sets_isoghost") - localStorage.getItem("b_sets_isoghost"))
@@ -153,6 +151,7 @@ doSelect = (item) ->
       (N = N + card.data("number"); C = C + card.data("color"); SD = SD + card.data("shade"); SP = SP + card.data("shape")) for card in set
       delay = 3500
       delay_increment = 750
+      console.log("N = " + N)
       if (N % 3 == 0)
         v_number = true
       else
@@ -300,7 +299,8 @@ handle = query.observeChanges(
 )
 
 Template.card.helpers
-  card: () -> return Cards.findOne({_id: this.card_mid})
+  card: () ->
+    return Cards.findOne({_id: this.card_mid})
 
 Template.textcard.helpers
   card: () -> return Cards.findOne({_id: this.card_mid})
@@ -309,13 +309,9 @@ Template.globalGame.helpers
   gamecards: () ->
     game_id = 0
     gc = Gamecards.find({game_id: game_id, status: 'playing'}, {sort: {order: 1}})
-    #d = gc.fetch()
-    #console.log(d)
     cardIds = gc.map (c) -> return c.card_mid
-    #console.log(cardIds)
     all = Cards.find({_id: {$in: cardIds}}).fetch()
     all = gc.fetch()
-    console.log(all)
     chunks = []
     if (window.innerHeight > window.innerWidth)
       size = 3
