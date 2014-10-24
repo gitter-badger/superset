@@ -30,3 +30,5 @@ Meteor.startup ->
       check_for_sets(game_id)
     order_cards: (game_id) ->
       orderCards(game_id)
+    remove_gaps: (game_id) ->
+      removeGaps(game_id)
