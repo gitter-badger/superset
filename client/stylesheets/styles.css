@@ -142,6 +142,30 @@ nav #timer{
   cursor: pointer;
 }
 
+.history-h {
+  background: #3c4047;
+  color: white;
+  padding: 4px;
+  font-size: 12px;
+  line-height: 14px;
+  vertical-align: middle;
+  font-family: 'Lato', sans-serif !important;
+}
+
+.minicard {
+  width: 3%;
+  pointer-events: none;
+  padding: 2px;
+  margin: .05%;
+}
+
+.set-type {
+  width: 2%;
+  pointer-events: none;
+  padding: 2px;
+  margin: .05%;
+}
+
 .svg-card {
   width:25%;
   height:25%;
