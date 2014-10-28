@@ -91,6 +91,19 @@ Template.globalGame.events
     else
       $('.button.display').removeClass('pressed')
       Session.set("interface-type","card")
+  'click .super': ->
+    if Session.get("game-super") == "false"
+      $('.button.super').addClass('pressed')
+      Session.set("game-super","true")
+      Session.set("selection-limit", 4)
+      $('.button.mode').addClass('pressed')
+      $('.button.isometric').removeClass('pressed')
+      Session.set("selection-type","normal")
+      Session.set("isometric","false")
+    else
+      $('.button.super').removeClass('pressed')
+      Session.set("game-super","false")
+      Session.set("selection-limit", 3)
   'click .mode': ->
     if Session.get("selection-type") == "normal"
       $('.button.mode').addClass('pressed')
@@ -320,7 +333,8 @@ Template.history.helpers
       return 'G'
     else if type == 'iso'
       return 'I'
-
+  niceDate: (time) ->
+    return moment(time).format('YYYY-MM-DD hh:mm:ss');
 
 Template.matchcard.helpers
   card: () ->
