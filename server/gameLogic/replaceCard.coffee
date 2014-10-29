@@ -11,3 +11,17 @@
         affected = result
         console.log("added: " + affected)
     )
+
+@replaceCards = (game_id,cards) ->
+  n = 0
+  for card in cards
+    console.log(card)
+    n++
+    in_play = Gamecards.find({game_id: game_id, status: 'playing'}).count()
+    matched_card = Gamecards.findOne({game_id: game_id, card_mid: card})
+    matched_card = matched_card.order
+    console.log("replacing: " + matched_card)
+    Gamecards.update({game_id: game_id, card_mid: card, status: 'playing'}, {$set: {status: 'matched'}, $unset: {order: ""}}, {multi: true})
+    if matched_card < 13 && in_play - n < 13
+      replaceCard(game_id,matched_card)
+  removeGaps(game_id)

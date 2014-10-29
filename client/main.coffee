@@ -2,17 +2,38 @@
 
 Session.setDefault("counter", 0)
 Session.setDefault("interface-type", "card")
-Session.setDefault("selection-type", "normal")
+Session.setDefault("game", 'normal')
 Session.setDefault("isometric", "false")
 Session.setDefault("selection-limit", 3)
 Session.setDefault("dark","false")
 sec = -1
 
-@cdelay = 450
+@cdelay = 600
 @game = 0
 
 pad = (val) ->
   return if val > 9 then val else "0" + val
+
+@gameTypes = ['normal','super','ghost','isoghost','superghost']
+
+gameButton = (type) ->
+  for gameType in gameTypes
+    if type == gameType
+      Session.set("game-" + gameType,"true")
+      $('.game-' + gameType).addClass('pressed')
+    else
+      Session.set("game-" + gameType,"false")
+      $('.game-' + gameType).removeClass('pressed')
+
+procScore = (type) ->
+  localStorage.setItem("sets_" + type, parseInt(localStorage.getItem("sets_" + type)) + 1);
+  $('.sets_' + type).html(localStorage.getItem("sets_" + type))
+  $('.sets_' + type).addClass('scored')
+  Meteor.setTimeout((-> $('.sets_' + type).removeClass('scored')), cdelay)
+  localStorage.setItem("b_sets_" + type, parseInt(localStorage.getItem("dt_sets_" + type)) + 1);
+  console.log('score ' + localStorage.getItem("dt_sets_" + type))
+  $('.sets_' + type + '_elapsed').html("0")
+  sec = -1
 
 $( document).ready () ->
   if !localStorage.getItem("sets_normal")
@@ -36,6 +57,14 @@ $( document).ready () ->
   $('.sets_normal_elapsed').html(localStorage.getItem("dt_sets_normal") - localStorage.getItem("b_sets_normal"))
   $('.sets_ghost_elapsed').html(localStorage.getItem("dt_sets_ghost") - localStorage.getItem("b_sets_ghost"))
   $('.sets_isoghost_elapsed').html(localStorage.getItem("dt_sets_isoghost") - localStorage.getItem("b_sets_isoghost"))
+
+  Session.set("game-normal","true")
+  $('.game-normal').addClass('pressed')
+  for gameType in gameTypes
+    if gameType != 'normal'
+      Session.set("game-" + gameType,"false")
+      $('.game-' + gameType).removeClass('pressed')
+
 
 
 
@@ -91,40 +120,21 @@ Template.globalGame.events
     else
       $('.button.display').removeClass('pressed')
       Session.set("interface-type","card")
-  'click .super': ->
-    if Session.get("game-super") == "false"
-      $('.button.super').addClass('pressed')
-      Session.set("game-super","true")
-      Session.set("selection-limit", 4)
-      $('.button.mode').addClass('pressed')
-      $('.button.isometric').removeClass('pressed')
-      Session.set("selection-type","normal")
-      Session.set("isometric","false")
-    else
-      $('.button.super').removeClass('pressed')
-      Session.set("game-super","false")
-      Session.set("selection-limit", 3)
-  'click .mode': ->
-    if Session.get("selection-type") == "normal"
-      $('.button.mode').addClass('pressed')
-      Session.set("selection-type","ghost")
-      Session.set("selection-limit", 6)
-    else
-      $('.button.mode').removeClass('pressed')
-      Session.set("selection-type","normal")
-      Session.set("selection-limit", 3)
-      $('.button.isometric').removeClass('pressed')
-      Session.set("isometric","false")
-  'click .isometric': ->
-    if Session.get("isometric") == "false"
-      $('.button.isometric').addClass('pressed')
-      $('.button.mode').addClass('pressed')
-      Session.set("isometric","true")
-      Session.set("selection-type","ghost")
-      Session.set("selection-limit", 6)
-    else
-      $('.button.isometric').removeClass('pressed')
-      Session.set("isometric","false")
+  'click .game-normal': ->
+    gameButton('normal')
+    Session.set("selection-limit", 3)
+  'click .game-super': ->
+    gameButton('super')
+    Session.set("selection-limit", 4)
+  'click .game-ghost': ->
+    gameButton('ghost')
+    Session.set("selection-limit", 6)
+  'click .game-isoghost': ->
+    gameButton('isoghost')
+    Session.set("selection-limit", 6)
+  'click .game-superghost': ->
+    gameButton('superghost')
+    Session.set("selection-limit", 8)
   'click .vision': ->
       if Session.get("dark") == "false"
         $('body').addClass('dark')
@@ -156,7 +166,7 @@ doSelect = (item) ->
 
   console.log('selected cards ' + $('.card.selected').length)
 
-  if Session.get("selection-type") == "normal"
+  if Session.get("game-normal") == "true"
     if ($('.card.selected').length == 3)
       N = 0
       C = 0
@@ -195,14 +205,7 @@ doSelect = (item) ->
         Meteor.setTimeout((-> $('.sp').remove()), delay)
         delay += delay_increment
       if (v_number && v_color && v_shade && v_shape)
-        localStorage.setItem("sets_normal", parseInt(localStorage.getItem("sets_normal")) + 1);
-        $('.sets_normal').html(localStorage.getItem("sets_normal"))
-        $('.sets_normal').addClass('scored')
-        Meteor.setTimeout((-> $('.sets_normal').removeClass('scored')), cdelay)
-        localStorage.setItem("b_sets_normal", parseInt(localStorage.getItem("dt_sets_normal")) + 1);
-        console.log('score ' + localStorage.getItem("dt_sets_normal"))
-        $('.sets_normal_elapsed').html("0")
-        sec = -1
+        procScore('normal')
         $('.messages').append('<div class="v">Valid Set!</div>')
         Meteor.setTimeout((-> $('.v').remove()), delay + 200)
         setargs = []
@@ -214,12 +217,11 @@ doSelect = (item) ->
       else
         set = []
         Meteor.setTimeout((-> $('.selected').removeClass('selected')), 250)
-  else if Session.get("selection-type") == "ghost"
+  else if ((Session.get("game-ghost") == "true") || (Session.get("game-isoghost") == "true"))
     if ($('.card.selected').length == 6)
       setargs = []
       setargs.push card.prop("id") for card in set
-      console.log(setargs)
-      if Session.get("isometric") == "true"
+      if Session.get("game-isoghost") == "true"
         iso = 1
       else
         iso = 0
@@ -229,29 +231,36 @@ doSelect = (item) ->
         else
           if result == 1
             if iso == 0
-              sec = -1
               message = 'Valid Ghost Set!'
-              localStorage.setItem("sets_ghost", parseInt(localStorage.getItem("sets_ghost")) + 1)
-              $('.sets_ghost').html(localStorage.getItem("sets_ghost"))
-              $('.sets_ghost').addClass('scored')
-              Meteor.setTimeout((-> $('.sets_ghost').removeClass('scored')), cdelay)
-              localStorage.setItem("b_sets_ghost", parseInt(localStorage.getItem("dt_sets_ghost")));
-              $('.sets_ghost_elapsed').html("0")
-              console.log('score ' + localStorage.getItem("dt_sets_ghost") + " " + localStorage.getItem("b_sets_ghost"))
+              procScore('ghost')
+
             else
-              sec = -1
               message = 'Valid Isometric Ghost Set!'
-              localStorage.setItem("sets_isoghost", parseInt(localStorage.getItem("sets_isoghost")) + 1)
-              $('.sets_isoghost').html(localStorage.getItem("sets_isoghost"))
-              $('.sets_isoghost').addClass('scored')
-              Meteor.setTimeout((-> $('.sets_isoghost').removeClass('scored')), cdelay)
-              localStorage.setItem("b_sets_isoghost", parseInt(localStorage.getItem("dt_sets_isghost")));
-              $('.sets_isoghost_elapsed').html("0")
+              procScore('isoghost')
           else
             if iso == 0
               message = 'Not a valid Ghost Set'
             else
               message = 'Not a valid Isometric Ghost Set (selection order matters)'
+          $('.messages').append('<div class="chk">'+message+'</div>')
+          Meteor.setTimeout((-> $('.chk').remove()), 1750)
+      Meteor.setTimeout((-> $('.selected').removeClass('selected')))
+      set = []
+  else if Session.get("game-super") == "true"
+    if ($('.card.selected').length == 4)
+      console.log('super proc')
+      setargs = []
+      setargs.push card.prop("id") for card in set
+      console.log(setargs)
+      Meteor.call 'setSuper', game, setargs, (error, result) ->
+        if error
+          console.log(error)
+        else
+          if result == 1
+            message = 'Valid Super Set!'
+            procScore('super')
+          else
+            message = 'Not a valid Super Set (order matters)'
           $('.messages').append('<div class="chk">'+message+'</div>')
           Meteor.setTimeout((-> $('.chk').remove()), 1750)
       Meteor.setTimeout((-> $('.selected').removeClass('selected')))
@@ -286,7 +295,7 @@ Template.nav.helpers
       Session.set("score_init",1)
     return s
   buttonstate: (name,value) ->
-    if Session.get(name) == value
+    if Session.get(name) == 'true'
       return 'pressed'
 
 query = Statistics.find({game: game})
@@ -331,8 +340,10 @@ Template.history.helpers
       return 'N'
     else if type == 'ghost'
       return 'G'
-    else if type == 'iso'
+    else if type == 'isoghost'
       return 'I'
+    else if type == 'super'
+      return 'S'
   niceDate: (time) ->
     return moment(time).format('YYYY-MM-DD hh:mm:ss');
 
