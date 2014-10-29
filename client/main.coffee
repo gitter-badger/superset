@@ -334,7 +334,7 @@ Template.textcard.helpers
 Template.history.helpers
  matches: () ->
    game_id = 0
-   matches = Matches.find({game_id: game_id}, {sort: {date: -1}, limit: 10})
+   matches = Matches.find({game_id: game_id}, {sort: {date: -1}})
   typeSymbol: (type) ->
     if type == 'normal'
       return 'N'
