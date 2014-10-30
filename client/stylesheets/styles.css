@@ -179,6 +179,9 @@ nav #timer{
   .card {
     width: 32%;
   }
+  .minicard {
+    width: 4%;
+  }
 }
 .intro-card {
   display: inline-block;
