@@ -2,8 +2,6 @@
 
 Session.setDefault("counter", 0)
 Session.setDefault("interface-type", "card")
-Session.setDefault("game", 'normal')
-Session.setDefault("isometric", "false")
 Session.setDefault("selection-limit", 3)
 Session.setDefault("dark","false")
 sec = -1
@@ -35,19 +33,8 @@ procScore = (type) ->
   $('.sets_' + type + '_elapsed').html("0")
   sec = -1
 
-initScore = (type) ->
-  if !localStorage.getItem("sets_" + type)
-    localStorage.setItem("sets_" + type,0)
-  $('.sets_' + type).html(localStorage.getItem("sets_" + type))
-  $('.sets_' + type + '_elapsed').html(localStorage.getItem("dt_sets_" + type) - localStorage.getItem("b_sets_" + type))
-  if (typeof(localStorage.getItem("dt_sets_" + type)) == 'undefined')
-    localStorage.setItem("dt_sets_" + type, 0)
-  if (typeof(localStorage.getItem("b_sets_" + type)) == 'undefined')
-    localStorage.setItem("b_sets_" + type, 0)
 
 $( document).ready () ->
-  for gameType in gameTypes
-    initScore(gameType)
 
   setInterval ->
     $("#te_s").html(pad(++sec % 60))
@@ -161,7 +148,7 @@ doSelect = (item) ->
       $(item).addClass('selected')
       set.push(item)
 
-  console.log('selected cards ' + $('.card.selected').length)
+  #console.log('selected cards ' + $('.card.selected').length)
 
   if Session.get("game-normal") == "true"
     if ($('.card.selected').length == 3)
@@ -295,48 +282,11 @@ window.onkeyup = (e) ->
     console.log($('.card').eq(key[e.which]).prop("id"))
     doSelect($('.card').eq(key[e.which]))
 
-Template.nav.helpers
-  statistics: ->
-    s = Statistics.findOne({game: game})
-    if s && !Session.get("score_init")
-      console.log("run once")
-      console.log(localStorage.getItem("b_sets_normal"))
-      if !parseInt(localStorage.getItem("b_sets_normal"))
-        localStorage.setItem("b_sets_normal", s.found_sets)
-      if !parseInt(localStorage.getItem("b_sets_super"))
-        if s.found_supers
-          localStorage.setItem("b_sets_super", s.found_supers)
-        else
-          localStorage.setItem("b_sets_super", 0)
-      if !parseInt(localStorage.getItem("b_sets_ghost"))
-        localStorage.setItem("b_sets_ghost", s.found_ghosts)
-      if !parseInt(localStorage.getItem("b_sets_isoghost"))
-        if s.found_isoghosts
-          localStorage.setItem("b_sets_isoghost", s.found_isoghosts)
-        else
-          localStorage.setItem("b_sets_isoghost", 0)
-      if !parseInt(localStorage.getItem("b_sets_superghost"))
-        if s.found_superghosts
-          localStorage.setItem("b_sets_superghost", s.found_superghosts)
-        else
-          localStorage.setItem("b_sets_superghost", 0)
-
-
-      localStorage.setItem('dt_sets_normal',s.found_sets)
-      localStorage.setItem('dt_sets_super',s.found_supers)
-      localStorage.setItem('dt_sets_ghost',s.found_ghosts)
-      localStorage.setItem('dt_sets_isoghost',s.found_isoghosts)
-      localStorage.setItem('dt_sets_superghost',s.found_superghosts)
-      Session.set("score_init",1)
-    return s
-  buttonstate: (name,value) ->
-    if Session.get(name) == 'true'
-      return 'pressed'
-
 query = Statistics.find({game: game})
 
 handle = query.observeChanges(
   changed: (id, record)->
+    console.log('changes')
     if record.found_sets
       if record.found_sets > localStorage.getItem("b_sets_normal")
         $('.sets_normal_elapsed').addClass('scored')
@@ -378,6 +328,7 @@ handle = query.observeChanges(
 
 
 )
+
 
 Template.card.helpers
   card: () ->
