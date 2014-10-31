@@ -15,7 +15,6 @@
         for card3 in c
           n3++
           if n3 > n2
-            console.log(n + ' - ' + n2 + ' - ' + n3)
             if card1 != card2 && card2 != card3 && card1 != card3
               N = card1.number + card2.number + card3.number
               C = card1.color + card2.color + card3.color
@@ -23,7 +22,6 @@
               SP = card1.shape + card2.shape + card3.shape
               if ((N % 3 == 0) && (C % 3 == 0) && (SD % 3 == 0) && (SP % 3 == 0))
                 i++
-  console.log("sets: " + i)
   if i == 0
     if c.length == 12
       refillGame(15,game_id)
