@@ -38,13 +38,12 @@ Template.nav.helpers
       localStorage.setItem('dt_sets_isoghost',s.found_isoghosts)
       localStorage.setItem('dt_sets_superghost',s.found_superghosts)
 
-      for gameType in gameTypes
-        initScore(gameType)
-
       Session.set("score_init",1)
     return s
   buttonstate: (name,value) ->
     if Session.get(name) == 'true'
       return 'pressed'
 
-# Template.nav.rendered = () ->
+Template.nav.rendered = () ->
+  for gameType in gameTypes
+    initScore(gameType)
