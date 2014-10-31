@@ -35,28 +35,25 @@ procScore = (type) ->
   $('.sets_' + type + '_elapsed').html("0")
   sec = -1
 
+initScore = (type) ->
+  if !localStorage.getItem("sets_" + type)
+    localStorage.setItem("sets_" + type,0)
+  $('.sets_' + type).html(localStorage.getItem("sets_" + type))
+  $('.sets_' + type + '_elapsed').html(localStorage.getItem("dt_sets_" + type) - localStorage.getItem("b_sets_" + type))
+  if (typeof(localStorage.getItem("dt_sets_" + type)) == 'undefined')
+    localStorage.setItem("dt_sets_" + type, 0)
+  if (typeof(localStorage.getItem("b_sets_" + type)) == 'undefined')
+    localStorage.setItem("b_sets_" + type, 0)
+
 $( document).ready () ->
-  if !localStorage.getItem("sets_normal")
-    localStorage.setItem("sets_normal",0)
-  $('.sets_normal').html(localStorage.getItem("sets_normal"))
-
-  if !localStorage.getItem("sets_ghost")
-    localStorage.setItem("sets_ghost",0)
-  $('.sets_ghost').html(localStorage.getItem("sets_ghost"))
-
-  if !localStorage.getItem("sets_isoghost")
-    localStorage.setItem("sets_isoghost",0)
-  $('.sets_isoghost').html(localStorage.getItem("sets_isoghost"))
-
+  for gameType in gameTypes
+    initScore(gameType)
 
   setInterval ->
     $("#te_s").html(pad(++sec % 60))
     $("#te_m").html(pad(parseInt(sec / 60, 10) % 60))
     $("#te_h").html(pad(parseInt(sec / 3600, 10)))
   ,1000
-  $('.sets_normal_elapsed').html(localStorage.getItem("dt_sets_normal") - localStorage.getItem("b_sets_normal"))
-  $('.sets_ghost_elapsed').html(localStorage.getItem("dt_sets_ghost") - localStorage.getItem("b_sets_ghost"))
-  $('.sets_isoghost_elapsed').html(localStorage.getItem("dt_sets_isoghost") - localStorage.getItem("b_sets_isoghost"))
 
   Session.set("game-normal","true")
   $('.game-normal').addClass('pressed')
@@ -265,6 +262,27 @@ doSelect = (item) ->
           Meteor.setTimeout((-> $('.chk').remove()), 1750)
       Meteor.setTimeout((-> $('.selected').removeClass('selected')))
       set = []
+  else if Session.get("game-superghost") == "true"
+    if ($('.card.selected').length == 8)
+      console.log('super ghost proc')
+      setargs = []
+      setargs.push card.prop("id") for card in set
+      console.log(setargs)
+      Meteor.call 'setSuperGhost', game, setargs, (error, result) ->
+        if error
+          console.log(error)
+        else
+          if result == 1
+            message = 'Valid Super Ghost Set!'
+            procScore('superghost')
+          else
+            message = 'Not a valid Super Ghost Set (order matters)'
+          $('.messages').append('<div class="chk">'+message+'</div>')
+          Meteor.setTimeout((-> $('.chk').remove()), 1750)
+        Meteor.setTimeout((-> $('.selected').removeClass('selected')))
+        set = []
+
+
 
 
 Template.globalGame.events
@@ -285,13 +303,30 @@ Template.nav.helpers
       console.log(localStorage.getItem("b_sets_normal"))
       if !parseInt(localStorage.getItem("b_sets_normal"))
         localStorage.setItem("b_sets_normal", s.found_sets)
+      if !parseInt(localStorage.getItem("b_sets_super"))
+        if s.found_supers
+          localStorage.setItem("b_sets_super", s.found_supers)
+        else
+          localStorage.setItem("b_sets_super", 0)
       if !parseInt(localStorage.getItem("b_sets_ghost"))
         localStorage.setItem("b_sets_ghost", s.found_ghosts)
       if !parseInt(localStorage.getItem("b_sets_isoghost"))
-        localStorage.setItem("b_sets_isoghost", s.found_isoghosts)
+        if s.found_isoghosts
+          localStorage.setItem("b_sets_isoghost", s.found_isoghosts)
+        else
+          localStorage.setItem("b_sets_isoghost", 0)
+      if !parseInt(localStorage.getItem("b_sets_superghost"))
+        if s.found_superghosts
+          localStorage.setItem("b_sets_superghost", s.found_superghosts)
+        else
+          localStorage.setItem("b_sets_superghost", 0)
+
+
       localStorage.setItem('dt_sets_normal',s.found_sets)
+      localStorage.setItem('dt_sets_super',s.found_supers)
       localStorage.setItem('dt_sets_ghost',s.found_ghosts)
       localStorage.setItem('dt_sets_isoghost',s.found_isoghosts)
+      localStorage.setItem('dt_sets_superghost',s.found_superghosts)
       Session.set("score_init",1)
     return s
   buttonstate: (name,value) ->
@@ -299,6 +334,7 @@ Template.nav.helpers
       return 'pressed'
 
 query = Statistics.find({game: game})
+
 handle = query.observeChanges(
   changed: (id, record)->
     if record.found_sets
@@ -308,6 +344,15 @@ handle = query.observeChanges(
       $('.sets_normal_elapsed').html(record.found_sets - localStorage.getItem("b_sets_normal"))
       console.log(record.found_sets + ' - ' + localStorage.getItem("b_sets_normal"))
       localStorage.setItem("dt_sets_normal",record.found_sets)
+
+    if record.found_supers
+      if record.found_supers > localStorage.getItem("b_sets_super")
+        $('.sets_super_elapsed').addClass('scored')
+        Meteor.setTimeout((-> $('.sets_super_elapsed').removeClass('scored')), cdelay)
+      $('.sets_super_elapsed').html(record.found_supers - localStorage.getItem("b_sets_super"))
+      console.log(record.found_supers + ' - ' + localStorage.getItem("b_sets_super"))
+      localStorage.setItem("dt_sets_super",record.found_supers)
+
 
     if record.found_ghosts
       if record.found_ghosts > localStorage.getItem("b_sets_ghost")
@@ -322,6 +367,16 @@ handle = query.observeChanges(
         Meteor.setTimeout((-> $('.sets_isoghost_elapsed').removeClass('scored')), cdelay)
       $('.sets_isoghost_elapsed').html(record.found_isoghosts - localStorage.getItem("b_sets_isoghost"))
       localStorage.setItem("b_sets_isoghost",record.found_isoghosts)
+
+    if record.found_superghosts
+      if record.found_superghosts > localStorage.getItem("b_sets_superghost")
+        $('.sets_superghost_elapsed').addClass('scored')
+        Meteor.setTimeout((-> $('.sets_superghost_elapsed').removeClass('scored')), cdelay)
+      $('.sets_superghost_elapsed').html(record.found_superghosts - localStorage.getItem("b_sets_superghost"))
+      console.log(record.found_superghosts + " x " + localStorage.getItem("b_sets_superghost"))
+      localStorage.setItem("b_sets_superghost",record.found_superghosts)
+
+
 )
 
 Template.card.helpers
@@ -344,6 +399,8 @@ Template.history.helpers
       return 'I'
     else if type == 'super'
       return 'S'
+    else if type == 'superghost'
+      return 'SG'
   niceDate: (time) ->
     return moment(time).format('YYYY-MM-DD hh:mm:ss');
 
