@@ -34,7 +34,12 @@ if Statistics.find().count() == 0
     game: 0,
     sets_found: 0,
     no_sets_in_twelve: 0,
-    no_sets_in_fifteen: 0
+    no_sets_in_fifteen: 0,
+    found_sets: 0,
+    found_supers: 0,
+    found_ghosts: 0,
+    found_isoghosts: 0,
+    found_superghosts: 0
   })
   console.log('insert stats')
 
