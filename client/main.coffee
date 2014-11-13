@@ -353,7 +353,7 @@ Template.history.helpers
     else if type == 'superghost'
       return 'SG'
   niceDate: (time) ->
-    return moment(time).format('YYYY-MM-DD hh:mm:ss');
+    return moment(time).format('YYYY-MM-DD HH:mm:ss');
 
 Template.matchcard.helpers
   card: () ->
