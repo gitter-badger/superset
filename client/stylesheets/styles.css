@@ -20,7 +20,7 @@ body{
 
 /************ Layout ***********/
 nav{
-  position: absolute;
+  position: fixed;
   top: 0px;
   left: -160px;
   bottom: 0px;
@@ -34,7 +34,7 @@ nav{
 nav:after{
   font-weight: 100;
   content: ">";
-  position: absolute;
+  position: fixed;
   right: 10px;
   color: white;
   top: 50%;
@@ -46,7 +46,7 @@ nav:hover:after{
 }
 
 #stats{
-  position: absolute;
+  position: fixed;
   top: 0px;
   left: 40px;
   right: 0px;
